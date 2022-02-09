@@ -1,16 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Default from './style';
-import 
+import { Background } from './components/Background';
+import Game from './Pages/Game';
 
-export default function Router(){
-    return(
-        <BrowserRouter>
-            <Default />
-            <Background>
+export default function Router() {
+    return (
+        <>
+            <Background />
+            <BrowserRouter>
+                <Default />
                 <Routes>
-                    <Route path="/" element={<h1>oi</h1>} />
+                    <Route path="/" element={<Game />} />
                 </Routes>
-            </Background>
-        </BrowserRouter>
+            </BrowserRouter>
+        </>
     );
 }
