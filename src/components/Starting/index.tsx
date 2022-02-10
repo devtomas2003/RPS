@@ -12,7 +12,7 @@ export default function Starting(props: StartingProps){
         <>
             <TextStarting>Olá, {props.nickname}! Vamos começar? Selecione a forma como pretende juntar-se a uma partida!</TextStarting>
             <BoxSelect>
-                <BoxBigBtn>
+                <BoxBigBtn onClick={() => {props.updateZone(3)}}>
                     <GoDiffAdded size={80} color="#fff" />
                     <BBBText>Criar uma nova sala</BBBText>
                 </BoxBigBtn>

@@ -5,12 +5,15 @@ type CodeProps = {
     nickname: string;
     code: string;
     updateCode: React.Dispatch<React.SetStateAction<string>>;
+    updateZone: React.Dispatch<React.SetStateAction<Number>>;
 }
 
 export default function Code(props: CodeProps){
     function verifyCode(){
         if(props.code === ""){
             alert("O campo codigo não pode estar vazio!");
+        }else{
+            props.updateZone(3);
         }
     }
     return (

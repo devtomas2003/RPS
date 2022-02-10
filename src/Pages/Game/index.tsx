@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Challange from "../../components/Challange";
 import Code from "../../components/Code";
 
 import Nickname from "../../components/Nickname";
@@ -18,7 +19,9 @@ export default function Game() {
                 : zone === 1 ?
                     <Starting nickname={nickname} updateZone={setZone} />
                 : zone === 2 ?
-                    <Code nickname={nickname} updateCode={setCode} code={code} />
+                    <Code nickname={nickname} updateZone={setZone} updateCode={setCode} code={code} />
+                : zone === 3 ?
+                    <Challange playerName={nickname} code={code} updateCode={setCode} />
                 : null }
             </BoxContainer>
         </BoxZone>
