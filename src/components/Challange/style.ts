@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+type propsOptions = {
+    isAtive: boolean;
+};
+
 export const TextChallange = styled.p`
     margin-top: 10px;
     font-size: 25px;
@@ -15,6 +19,7 @@ export const BoxOptions = styled.div`
     justify-content: space-between;
     width: 90%;
     margin-top: 15px;
+    margin-bottom: 10px;
 `;
 
 export const ItemOption = styled.div`
@@ -22,13 +27,14 @@ export const ItemOption = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #ebebeb;
+    background: ${(props: propsOptions) => props.isAtive ? '#ddd' : '#ebebeb'};
     border-radius: 20px;
     width: 200px;
     height: 200px;
     user-select: none;
     &:hover{
         cursor: pointer;
+        background: #ddd;
     }
 `;
 

@@ -13,7 +13,7 @@ export default function Game() {
     return (
         <BoxZone>
             <BoxContainer>
-                <RPSText>Rocket Paper Scissors</RPSText>
+                <RPSText>Rock Paper Scissors</RPSText>
                 {zone === 0 ?
                     <Nickname nickname={nickname} updateNickname={setNickname} updateZone={setZone} />
                 : zone === 1 ?
