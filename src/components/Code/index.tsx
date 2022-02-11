@@ -20,7 +20,7 @@ export default function Code(props: CodeProps){
         <>
             <TextCode>Está quase, {props.nickname}! Introduza na caixa abaixo o codigo para te juntares a um amigo!</TextCode>
             <ImageCode src={CodeImage} title="Insert Code" />
-            <InputCode type="text" placeholder="Ex: 5CAF2" value={props.code} onChange={(e) => {props.updateCode(e.target.value)}} />
+            <InputCode type="text" placeholder="Ex: 5CAF2" value={props.code} onChange={(e) => {props.updateCode(e.target.value.trim())}} />
             <BtnNext onClick={() => {verifyCode()}}>
                 <NextText>Começar</NextText>
             </BtnNext>

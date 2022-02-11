@@ -11,14 +11,32 @@ type ChallangeProps = {
 
 export default function Challange(props: ChallangeProps){
     const [enemy, setEnemy] = useState<string>('');
-    const [blocked, setBlocked] = useState<number>(9);
+    const [connection, setConnection] = useState<Socket>();
+
     const [enemyPlayed, setEnemyPlayed] = useState<Boolean>(false);
+    const [localPlayed, setLocalPlayed] = useState<Boolean>(false);
+    const [blocked, setBlocked] = useState<number>(9);
+
+    const [errorParty, setErrorParty] = useState<string>('');
+    const [partyData, setPartyData] = useState<string>('');
+
     const [enemyPontuation, setEnemyPontuation] = useState<number>(0);
     const [pontuation, setPontuation] = useState<number>(0);
-    const [connection, setConnection] = useState<Socket>();
+
+    function showFinal(text: string){
+        setPartyData(text);
+        setTimeout(function(){
+            setPartyData('');
+        }, 4000);
+    }
+
+    function codeToName(code: number){
+        return code === 0 ? 'Pedra' : code === 1 ? "Papel" : "Tesoura";
+    }
+
     useEffect(function(){
         function connectSocket() {
-            const socket = io("http://localhost:8080/");
+            const socket = io("https://rps-tnd.herokuapp.com/");
             setConnection(socket);
             const partyInfo = {
                 playerName: props.playerName,
@@ -44,22 +62,28 @@ export default function Challange(props: ChallangeProps){
             socket.on('enemyPlayed', function(){
                 setEnemyPlayed(true);
             });
+            socket.on('partyError', function(error){
+                if(error === 0){
+                    setErrorParty('O codigo introduzido é invalido!');
+                }else if(error === 1){
+                    setErrorParty('A sala já está cheia!');
+                }else{
+                    setErrorParty('Já existe alguem com o seu nome nesta sala!');
+                }
+            });
             socket.on('moveResult', function(response){
                 const result = JSON.parse(response);
                 setBlocked(9);
+                setLocalPlayed(false);
+                setEnemyPlayed(false);
                 if(result.result === "perdeu"){
-                    console.log(result.enemyPoints);
                     setEnemyPontuation(result.enemyPoints);
-                    alert("PERDESTE!!!!!");
-                    setEnemyPlayed(false);
+                    showFinal("Perdeste! :( O adversário jogou " + codeToName(result.enemy));
                 }else if(result.result === "empatou"){
-                    alert("EMPATOU!!!");
-                    setEnemyPlayed(false);
+                    showFinal("Empate! O adversário também jogou " + codeToName(result.enemy));
                 }else{
-                    console.log(result.pontos);
                     setPontuation(result.pontos);
-                    alert("GANHOU!!!!!");
-                    setEnemyPlayed(false);
+                    showFinal("Ganhaste! O adversário jogou " + codeToName(result.enemy));
                 }
             });
         }
@@ -67,6 +91,7 @@ export default function Challange(props: ChallangeProps){
     }, []);
     function selectOption(jogada: number){
         if(blocked === 9){
+            setLocalPlayed(true);
             setBlocked(jogada);
             const moveSelected = {
                 jogada,
@@ -77,10 +102,15 @@ export default function Challange(props: ChallangeProps){
     }
     return (
         <>
-            <TextChallange><VSText>Código: </VSText>{props.code} <LinkBack>Sair da partida</LinkBack></TextChallange>
-            { enemy !== "" ? <TextChallange>{props.playerName} <VSText>vs</VSText> {enemy}</TextChallange> : <TextChallange>A aguardar adversário</TextChallange>}
-            { enemy !== "" ? <TextChallange>{pontuation} <VSText>-</VSText> {enemyPontuation}</TextChallange> : null }
-            <WhoPlay>{props.playerName}: Seleciona uma jogada</WhoPlay>
+            <TextChallange><VSText>Código: </VSText>{props.code} <LinkBack onClick={() => { location.reload(); }}>Sair da partida</LinkBack></TextChallange>
+            { errorParty !== "" ? <TextChallange>{errorParty}</TextChallange> : null }
+            { errorParty === "" ? enemy !== "" ? <TextChallange>{props.playerName} <VSText>vs</VSText> {enemy}</TextChallange> : <TextChallange>Oi, {props.playerName}: A aguardar adversário</TextChallange> : null }
+            { partyData !== "" ? <TextChallange>{partyData}</TextChallange> : null }
+            { enemy !== "" ? <>
+            <TextChallange>{pontuation} <VSText>-</VSText> {enemyPontuation}</TextChallange>
+            { partyData === "" ?
+            <>
+            <WhoPlay>{props.playerName}: { !localPlayed ? 'Seleciona uma jogada' : 'Já jogaste' }</WhoPlay>
             <BoxOptions>
                 <ItemOption isAtive={blocked === 0 ? true : false} onClick={() => { selectOption(0); }}>
                     <GiRock size={100} color="#333" />
@@ -95,7 +125,12 @@ export default function Challange(props: ChallangeProps){
                     <IOText>Tesoura</IOText>
                 </ItemOption>
             </BoxOptions>
-            { enemy !== "" ? <WhoPlay>{enemy}: { !enemyPlayed ? 'Ainda não jogou!' : 'Já jogou!' }</WhoPlay> : null }
+            <WhoPlay>{enemy}: { !enemyPlayed ? 'Ainda não jogou!' : 'Já jogou!' }</WhoPlay>
+            </>
+            : null }
+            </>
+             : null }
+
         </>
     );
 }
