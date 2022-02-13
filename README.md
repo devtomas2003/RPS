@@ -1,3 +1,3 @@
-# RPS - Rocket Paper Scissors (Frontend)
+# RPS - Rock Paper Scissors (Frontend)
 
 Código do Frontend do RPS
